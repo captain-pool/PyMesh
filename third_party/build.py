@@ -43,10 +43,10 @@ def build_generic(libname, build_flags="", cleanup=True):
     subprocess.check_call(cmd.split(), cwd=build_dir);
 
     # Build cgal
-    cmd = "cmake --build {}".format(build_dir);
+    cmd = "cmake --build {} --parallel 8".format(build_dir);
     subprocess.check_call(cmd.split());
 
-    cmd = "cmake --build {} --target install".format(build_dir);
+    cmd = "cmake --build {} --parallel 8 --target install".format(build_dir);
     subprocess.check_call(cmd.split());
 
     # Clean up
@@ -70,6 +70,12 @@ def build(package, cleanup):
     elif package == "json":
         build_generic("json",
                 " -DJSON_BuildTests=Off",
+                cleanup=cleanup);
+    elif package == "cork":
+        gmp_inc_dir = os.environ["GMP_INC"]
+        gmp_lib = os.environ["GMP_LIB"]
+        build_generic("cork",
+                f"-DGMP_LIBRARIES={gmp_lib} -DGMP_INCLUDE_DIRS={gmp_inc_dir}",
                 cleanup=cleanup);
     else:
         build_generic(package, cleanup=cleanup);
