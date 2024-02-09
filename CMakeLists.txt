@@ -1,4 +1,5 @@
 cmake_minimum_required(VERSION 3.11.0)
+set(CMAKE_OSX_ARCHITECTURES "x86_64")
 #set_property(GLOBAL PROPERTY RULE_LAUNCH_COMPILE "${CMAKE_COMMAND} -E time")
 
 project(PyMesh)

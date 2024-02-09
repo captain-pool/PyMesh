@@ -40,7 +40,8 @@ def build_generic(libname, build_flags="", cleanup=True):
             " -DCMAKE_POSITION_INDEPENDENT_CODE=On" + \
             build_flags + \
             " -DCMAKE_INSTALL_PREFIX={}/python/pymesh/third_party/".format(pymesh_dir);
-    subprocess.check_call(cmd.split(), cwd=build_dir);
+    print(cmd)
+    subprocess.check_output(cmd.split(), cwd=build_dir);
 
     # Build cgal
     cmd = "cmake --build {} --parallel 8".format(build_dir);
@@ -58,9 +59,10 @@ def build(package, cleanup):
         for libname in get_third_party_dependencies():
             build(libname, cleanup);
     elif package == "cgal":
-        build_generic("cgal",
-                " -DWITH_CGAL_ImageIO=Off -DWITH_CGAL_Qt5=Off",
-                cleanup=cleanup);
+        build_flags = f" -DGMP_LIBRARIES={os.environ['GMP_LIB']} -DGMP_INCLUDE_DIR={os.environ['GMP_INC']} "
+        build_flags += f"-DMPFR_LIBRARIES={os.environ['MPFR_LIB']} -DMPFR_INCLUDE_DIR={os.environ['MPFR_INC']} "
+        build_flags += "-DWITH_CGAL_ImageIO=Off -DWITH_CGAL_Qt5=Off"
+        build_generic("cgal", build_flags, cleanup=cleanup);
     elif package == "clipper":
         build_generic("Clipper/cpp", cleanup=cleanup);
     elif package == "tbb":
